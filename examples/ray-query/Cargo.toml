@@ -1,0 +1,30 @@
+[package]
+name = "ray-query"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+resolver = "2"
+members = [
+  "blade-asset",
+  "blade-graphics",
+  "blade-macros"
+]
+
+
+[workspace.dependencies]
+base64 = "0.21"
+blade = "0.3.0"
+bytemuck = { version = "1", features = ["derive"] }
+blade_graphics = { path ="blade-graphics" }
+blade_macros = { path ="blade-macros" }
+bitflags = "2"
+choir = "0.7"
+env_logger = "0.11"
+log = "0.4"
+mint = "0.5"
+naga = { git = "https://github.com/gfx-rs/wgpu", rev = "0f111cb27c3a06ac15325791212b9d4139d7eaa3", features = ["wgsl-in"] }
+profiling = "1"
+web-sys = "0.3.60"
+slab = "0.4"
+winit = { version = "0.30" }
