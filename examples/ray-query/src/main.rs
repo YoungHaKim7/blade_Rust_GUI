@@ -1,13 +1,14 @@
 #![allow(irrefutable_let_patterns)]
 
 use blade_graphics as gpu;
+#[cfg(not(target_arch = "wasm32"))]
 use std::{mem, ptr, time};
 
 const TORUS_RADIUS: f32 = 3.0;
 const TARGET_FORMAT: gpu::TextureFormat = gpu::TextureFormat::Rgba16Float;
 
 #[repr(C)]
-#[derive(Clone, Copy, bytemuck::Zeroable, bytemuck::Pod)]
+#[derive(Clone, Copy)]
 pub struct Parameters {
     cam_position: [f32; 3],
     depth: f32,
@@ -17,14 +18,14 @@ pub struct Parameters {
     rotation_angle: f32,
 }
 
-#[derive(blade_macros::ShaderData)]
+#[derive(gpu::ShaderData)]
 struct ShaderData {
     parameters: Parameters,
     acc_struct: gpu::AccelerationStructure,
     output: gpu::TextureView,
 }
 
-#[derive(blade_macros::ShaderData)]
+#[derive(gpu::ShaderData)]
 struct DrawData {
     input: gpu::TextureView,
 }
@@ -121,8 +122,12 @@ impl Example {
             multisample_state: Default::default(),
         });
 
-        let (indices, vertex_values) =
-            del_msh_core::trimesh3_primitive::torus_yup::<u16, f32>(TORUS_RADIUS, 1.0, 100, 20);
+        let (indices, vertex_values) = crate::del_msh_core::trimesh3_primitive::torus_yup::<u16, f32>(
+            TORUS_RADIUS,
+            1.0,
+            100,
+            20,
+        );
         let vertex_buf = context.create_buffer(gpu::BufferDesc {
             name: "vertices",
             size: (vertex_values.len() * mem::size_of::<f32>()) as u64,
